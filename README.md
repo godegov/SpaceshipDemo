@@ -39,36 +39,51 @@ You can also download project archives in the [Releases](https://github.com/Unit
 Currently it's expected for the menu mode to have artifacts. That's because of how cameras are managed in this project, I wasn't able to find a suitable solution yet.
 
 Command line arguments:
-"--benchmark" - enables benchmark run starting with the scripted scene and prints out perf report in the end
 
-"--screenshots" - enables screenshot dumping every 10-20 seconds
+* "--benchmark" - enables benchmark run starting with the scripted scene and prints out perf report in the end
 
-"-reportpath" - sets the path where reports (JSON/HTML) should be placed. If not specified, the default value is "MyDocuments/Spaceship Demo"
+* "--screenshots" - enables screenshot dumping every 10-20 seconds
 
-"-quality" - sets the overall quality:
+* "-reportpath" - sets the path where reports (JSON/HTML) should be placed. If not specified, the default value is "MyDocuments/Spaceship Demo"
+
+* "-quality" - sets the overall quality:
+
 		"low",
+
 		"high",
+
 		"ultra"
+		
 If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-"-upsamplingmethod" sets the upsampling method from the following list:
+* "-upsamplingmethod" sets the upsampling method from the following list:
+
 		"CatmullRom",
+
 		"CAS",
+
 		"TAAU",
+
 		"FSR",
+
 		"DLSS"
 
 the call should look like this: "-upsamplingmethod DLSS". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified).
 
-"-aa" sets anti-aliasing method for fallback rendering (for those upscaling methods that do not support antialiasing, that's non-DLSS methods):
+* "-aa" sets anti-aliasing method for fallback rendering (for those upscaling methods that do not support antialiasing, that's non-DLSS methods):
+
 		"none",
+
 		"FXAA",
+
 		"TAA",
+
 		"SMAA"
+
 If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-"-nofinalblit" if present, disables blitting the offscreen render target to the screen, saving CPU/GPU time. Screen is expected to be black with UI text apparing on it if activated.
+* "-nofinalblit" if present, disables blitting the offscreen render target to the screen, saving CPU/GPU time. Screen is expected to be black with UI text apparing on it if activated.
 
-"-offscreenres" sets the offscreen resolution. "-offscreenres 4K" sets the resolution to 4K. "-offscreenres 4000x2000" sets custom resolution (WxH). Predefined parameters are: 4K, 2K, FHD, 2160p, 1440p, 1080p. So just add the predefined paramtere to -offscreenres to get the appropriate resolution, like this: "-offscreenres 1440p" or "-offscreenres 2K". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
+* "-offscreenres" sets the offscreen resolution. "-offscreenres 4K" sets the resolution to 4K. "-offscreenres 4000x2000" sets custom resolution (WxH). Predefined parameters are: 4K, 2K, FHD, 2160p, 1440p, 1080p. So just add the predefined paramtere to -offscreenres to get the appropriate resolution, like this: "-offscreenres 1440p" or "-offscreenres 2K". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-"-screenpercentage" works for DLSS only. Sets the screenpercentage in percent integers. For example to set half-resolution rendering add "-screenpercentage 50". To set the DLSS into DLAA mode use "-screenpercentage 100". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
+* "-screenpercentage" works for DLSS only. Sets the screenpercentage in percent integers. For example to set half-resolution rendering add "-screenpercentage 50". To set the DLSS into DLAA mode use "-screenpercentage 100". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
