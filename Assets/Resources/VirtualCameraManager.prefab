@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: 3599359036091837833}
   m_Layer: 0
   m_Name: VirtualCameraManager
-  m_TagString: MainCamera
+  m_TagString: FixedResolution
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -260,7 +260,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 7991
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: a8359aef88fe7324fb9e80d5aa5224d0, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0

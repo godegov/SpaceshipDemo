@@ -28,6 +28,12 @@ public class FPSManager : Manager
             EndRecord();
     }
 
+    private void OnApplicationQuit()
+    {
+        if (recording)
+            EndRecord();
+    }
+
     private void Update()
     {
         float dt = GetSmoothDeltaTime();
@@ -203,8 +209,10 @@ public class FPSManager : Manager
     public bool recordingPaused = false;
     List<float> timings;
     string HTMLPath;
+    private string JSONPath;
     float recordTTL;
 
+    private string TimeStamp;
 
     public void Record(string filename)
     {
@@ -212,9 +220,14 @@ public class FPSManager : Manager
             EndRecord();
 
         var now = DateTime.Now;
+        TimeStamp = Convert.ToString((int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-        HTMLPath = $"{filename}-{now.Year.ToString("D4")}{now.Month.ToString("D2")}{now.Day.ToString("D2")}-{now.Hour.ToString("D2")}{now.Minute.ToString("D2")}{now.Second.ToString("D2")}.html";
+        string FileNameString =
+            $"{filename}-{now.Year.ToString("D4")}{now.Month.ToString("D2")}{now.Day.ToString("D2")}-{now.Hour.ToString("D2")}{now.Minute.ToString("D2")}{now.Second.ToString("D2")}";
+        HTMLPath = FileNameString + ".html";
+        JSONPath = FileNameString + ".json";
         Debug.Log($"Started Recording benchmark at path: {HTMLPath}");
+        Debug.Log($"JSON path: {JSONPath}");
         recording = true;
         recordingPaused = false;
         timings = new List<float>();
@@ -223,6 +236,28 @@ public class FPSManager : Manager
     }
 
     public RecordingResults results { get; private set; }
+
+    public string GetPath()
+    {
+        string Result = "";
+        string[] Args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < Args.Length; i++)
+        {
+            string LowerArgs = Args[i].ToLower();
+            if (LowerArgs == "-reportpath")
+            {
+                string Path = Args[++i];
+                Result = Path;
+                if (!Result.EndsWith('\\'))
+                    Result += "\\";
+
+                return Result;
+            }
+        }
+
+        string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        return Path.Combine(myDocumentsPath, "Spaceship Demo");
+    }
 
     public void EndRecord(bool abort = false)
     {
@@ -241,13 +276,16 @@ public class FPSManager : Manager
         float min = float.PositiveInfinity;
         float max = float.NegativeInfinity;
 
+        List<float> JSONFPS = new List<float>();
         foreach (var time in timings)
         {
             min = Mathf.Min(time, min);
             max = Mathf.Max(time, max);
             med += time;
+            JSONFPS.Add(1000.0f / time);
         }
 
+        float Duration = med;
         med /= timings.Count;
 
         results = new RecordingResults
@@ -278,12 +316,15 @@ public class FPSManager : Manager
         string gpuInfo = $"{SystemInfo.graphicsDeviceName}({SystemInfo.graphicsDeviceType}) {SystemInfo.graphicsMemorySize / 1000}GB VRAM";
         string memInfo = $"{SystemInfo.systemMemorySize / 1000}GB.";
 
+        string upscaleMethod = $"{GameOption.Get<SpaceshipOptions>().upsamplingMethod.ToString()}";
+        int ScreenPercentage = GameOption.Get<SpaceshipOptions>().screenPercentage;
+        string aa = BlittingScript.AAConstants[QualitySettings.antiAliasing];
+        string quality = BlittingScript.QualityConstants[QualitySettings.GetQualityLevel()];
 
 #if UNITY_STANDALONE && !UNITY_EDITOR
         try
         {
-            string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string spaceshipPath = Path.Combine(myDocumentsPath, "Spaceship Demo");
+            string spaceshipPath = GetPath();
 
             if (!Directory.Exists(spaceshipPath))
                 Directory.CreateDirectory(spaceshipPath);
@@ -317,6 +358,10 @@ font-family: 'Roboto', sans-serif;
 <b>CPU : </b> {cpuInfo} <br/>
 <b>Memory : </b> {memInfo} <br/>
 <b>GPU : </b> {gpuInfo} <br/>
+<b>Screen percentage : </b> {ScreenPercentage} <br/>
+<b>Upscale method : </b> {upscaleMethod} <br/>
+<b>AA method : </b> {aa} <br/>
+<b>Quality settings : </b> {quality} <br/>
 
 <div id=""chart""></div>
 </body>
@@ -334,6 +379,52 @@ var chart = c3.generate({{
 ");
 
             writer.Close();
+
+            string JSONTimings = string.Join(",\n        ", JSONFPS);
+            string JsonContent = String.Format("{{\n" +
+                                           "    \"uver\": \"{0}\",\n" +
+                                           "    \"aver\": \"{1}\",\n" +
+                                           "    \"platform\": \"{2}\",\n" +
+                                           "    \"gfxDevice\": \"{3}\",\n" +
+                                           "    \"gfxVendor\": \"{4}\",\n" +
+                                           "    \"vsync\": {5},\n" +
+                                           "    \"ts\": {6},\n" +
+                                           "    \"duration\": {7},\n" +
+                                           "    \"avgfps\": {8},\n" +
+                                           "    \"bestfps\": {9},\n" +
+                                           "    \"worstfps\": {10},\n" +
+                                           "    \"screenpercentage\": {11},\n" +
+                                           "    \"upscalemethod\": \"{12}\",\n" +
+                                           "    \"aa\": \"{13}\",\n" +
+                                           "    \"quality\": \"{14}\",\n" +
+                                           "    \"screenWidth\": {15},\n" +
+                                           "    \"screenHeight\": {16},\n" +
+                                           "    \"timings\": [\n" +
+                                           "        {17}\n    ]\n" +
+                                           "}}",
+            Application.version,
+            Application.unityVersion,
+            Application.platform.ToString(),
+            SystemInfo.graphicsDeviceName,
+            SystemInfo.graphicsDeviceVendor,
+            go.vSync ? 1 : 0,
+            TimeStamp,
+            Duration,
+            1000.0f / med,
+            1000.0f / min,
+            1000.0f / max,
+            ScreenPercentage,
+            upscaleMethod,
+            aa,
+            quality,
+            go.width,
+            go.height,
+            JSONTimings
+            );
+
+            var JSONwriter = new StreamWriter($"{spaceshipPath}/{JSONPath}");
+            JSONwriter.Write(JsonContent);
+            JSONwriter.Close();
             System.Globalization.CultureInfo.CurrentCulture = currentCulture;
 
         } 
