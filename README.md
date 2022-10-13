@@ -70,7 +70,7 @@ If not set, the serialized value from GUI Options is taken (which may have chang
 
 the call should look like this: "-upsamplingmethod DLSS". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified).
 
-**Note that if the DLSS is enabled, the fallback AA method won't get activated because the Unity engine forces the off since the DLSS does both the upscaling and anti-aliasing.**
+**Note that if the DLSS is enabled, the fallback AA method won't get activated because the Unity engine forces it off since the DLSS does both the upscaling and anti-aliasing.**
 
 * "-aa" sets anti-aliasing method for fallback rendering (for those upscaling methods that do not support antialiasing, that's non-DLSS methods):
 
