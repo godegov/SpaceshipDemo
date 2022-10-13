@@ -40,13 +40,13 @@ Currently it's expected for the menu mode to have artifacts. That's because of h
 
 Command line arguments:
 
-* "--benchmark" - enables benchmark run starting with the scripted scene and prints out perf report in the end
+* "-benchmark": - enables benchmark run starting with the scripted scene and prints out perf report in the end
 
-* "--screenshots" - enables screenshot dumping every 10-20 seconds
+* "-screenshots": - enables screenshot dumping every 10-20 seconds
 
-* "-reportpath" - sets the path where reports (JSON/HTML) should be placed. If not specified, the default value is "MyDocuments/Spaceship Demo"
+* "-reportpath": - sets the path where reports (JSON/HTML) should be placed. If not specified, the default value is "MyDocuments/Spaceship Demo"
 
-* "-quality" - sets the overall quality:
+* "-quality": - sets the overall quality:
 
 		"low",
 
@@ -56,7 +56,7 @@ Command line arguments:
 		
 If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-* "-upsamplingmethod" sets the upsampling method from the following list:
+* "-upsamplingmethod": sets the upsampling method from the following list:
 
 		"CatmullRom",
 
@@ -82,8 +82,8 @@ the call should look like this: "-upsamplingmethod DLSS". If not set, the serial
 
 If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-* "-nofinalblit" if present, disables blitting the offscreen render target to the screen, saving CPU/GPU time. Screen is expected to be black with UI text apparing on it if activated.
+* "-nofinalblit": if present, disables blitting the offscreen render target to the screen, saving CPU/GPU time. Screen is expected to be black with UI text apparing on it if activated.
 
-* "-offscreenres" sets the offscreen resolution. "-offscreenres 4K" sets the resolution to 4K. "-offscreenres 4000x2000" sets custom resolution (WxH). Predefined parameters are: 4K, 2K, FHD, 2160p, 1440p, 1080p. So just add the predefined paramtere to -offscreenres to get the appropriate resolution, like this: "-offscreenres 1440p" or "-offscreenres 2K". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
+* "-offscreenres": Sets the offscreen resolution. "-offscreenres 4K" sets the resolution to 4K. "-offscreenres 4000x2000" sets custom resolution (WxH). Predefined parameters are: 4K, 2K, FHD, 2160p, 1440p, 1080p. So just add the predefined paramtere to -offscreenres to get the appropriate resolution, like this: "-offscreenres 1440p" or "-offscreenres 2K". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
 
-* "-screenpercentage" works for DLSS only. Sets the screenpercentage in percent integers. For example to set half-resolution rendering add "-screenpercentage 50". To set the DLSS into DLAA mode use "-screenpercentage 100". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)
+* "-screenpercentage": Sets the screenpercentage in percent integers. For example to set half-resolution rendering add "-screenpercentage 50". To set the DLSS into DLAA mode use "-screenpercentage 100". If not set, the serialized value from GUI Options is taken (which may have changed on the previous run if this option was specified)

@@ -297,15 +297,22 @@ public class FPSManager : Manager
 
         GraphicOption go = GameOption.Get<GraphicOption>();
         SpaceshipOptions o = GameOption.Get<SpaceshipOptions>();
+
+        GameObject PC = GameObject.Find("PresentCamera");
+        BlittingScript bs = PC != null ? PC.gameObject.GetComponent<BlittingScript>() : null;
+
+        int W = bs == null ? go.width : bs.OffscreenWidth;
+        int H = bs == null ? go.height : bs.OffscreenHeight;
+
         float p = o.screenPercentage / 100f;
-        float mPix = (go.width * p * go.height * p) / 1000000;
+        float mPix = (W * p * H * p) / 1000000;
 
 
         string dateTime = $"{DateTime.Now.ToLongDateString()} {DateTime.Now.ToShortTimeString()}";
         string operatingSystem = $"{SystemInfo.operatingSystem}";
         string sp = o.screenPercentage == 100 ? $"Native" : $"{o.screenPercentage}% SP ({o.upsamplingMethod.ToString()})";
 
-        string settings = $"{go.width}x{go.height}@{go.refreshRate}Hz ({go.fullScreenMode}) {sp} ({mPix.ToString("F2")} MegaPixels)- {QualitySettings.names[QualitySettings.GetQualityLevel()]} Quality";
+        string settings = $"{W}x{H}@{go.refreshRate}Hz ({go.fullScreenMode}) {sp} ({mPix.ToString("F2")} MegaPixels)- {QualitySettings.names[QualitySettings.GetQualityLevel()]} Quality";
         string bestFPS = $"{(1000 / min).ToString("F1")}fps ({min.ToString("F2")}ms)";
         string worstFPS = $"{(1000 / max).ToString("F1")}fps ({max.ToString("F2")}ms)";
         string averageFPS = $"{(1000 / med).ToString("F1")}fps ({med.ToString("F2")}ms)";
@@ -417,14 +424,34 @@ var chart = c3.generate({{
             upscaleMethod,
             aa,
             quality,
-            go.width,
-            go.height,
+            W,
+            H,
             JSONTimings
             );
 
             var JSONwriter = new StreamWriter($"{spaceshipPath}/{JSONPath}");
             JSONwriter.Write(JsonContent);
             JSONwriter.Close();
+
+            List<string> FileContent = new List<string>();
+            string StatisticsFileName = $"{spaceshipPath}\\Statistics.txt";
+            if (File.Exists(StatisticsFileName))
+            {
+                string[] Data = File.ReadAllLines(StatisticsFileName);
+                foreach (string s in Data)
+                    FileContent.Add(s);
+            }
+            else
+            {
+                FileContent.Add($"GPU\tResolution\tQuality\tUpscale method\tUpscale %\tAA method\tMax FPS\tMin FPS\tAvg FPS\tAvg frame time (ms)");
+            }
+
+            FileContent.Add($"{SystemInfo.graphicsDeviceName}\t{W}x{H}\t{quality}\t{upscaleMethod}\t{ScreenPercentage}\t{aa}\t{1000 / min}\t{1000 / max}\t{1000 / med}\t{med}");
+
+            var AllData = string.Join("\r\n", FileContent);
+            File.WriteAllText(StatisticsFileName, AllData);
+
+
             System.Globalization.CultureInfo.CurrentCulture = currentCulture;
 
         } 
@@ -435,5 +462,5 @@ var chart = c3.generate({{
 #endif
     }
 
-    #endregion
+#endregion
 }

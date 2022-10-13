@@ -1349,7 +1349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Enable Pause (CLI Check)
-  Option: --benchmark
+  Option: -benchmark
   OnArgumentPresent: []
   OnArgumentAbsent:
   - {fileID: 3259676971924205576}

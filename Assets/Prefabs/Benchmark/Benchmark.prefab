@@ -595,7 +595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: if benchmark in CLI
-  Option: --benchmark
+  Option: -benchmark
   OnArgumentPresent:
   - {fileID: 558101026044696547}
   OnArgumentAbsent:
@@ -2258,8 +2258,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebc2b0ba75ae08f46b7de01892c0fdf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: if --benchmark
-  Option: --screenshots
+  Name: if -benchmark
+  Option: -screenshots
   OnArgumentPresent:
   - {fileID: 2644557470996910844}
   OnArgumentAbsent: []

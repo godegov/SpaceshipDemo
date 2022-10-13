@@ -19,13 +19,13 @@ public class BlittingScript : MonoBehaviour
 	private RenderTexture MainBackBuffer;	// Back Buffer of the RenderCamera that was set by the game from Unity GUI
 	private RenderTexture FixedSizeRT;		// The replacement for the RenderCamera target texture of the requested offscreen size
 
-	private int OffscreenWidth = 1280;		// Width of the offscreen RT size
-	private int OffscreenHeight = 1024;	 // Width of the offscreen RT size
+	public int OffscreenWidth = 0; // Width of the offscreen RT size
+	public int OffscreenHeight = 0;	 // Width of the offscreen RT size
 	private SpaceshipOptions.UpsamplingMethod UpsamplingMethod = SpaceshipOptions.UpsamplingMethod.DLSS;		// Upsampling method that comes from the command line
 	private float ScreenPercentage = 50;
 
 	private bool FinalBlit = true;			// Should we do the final blitting from the RenderCamera to PresentCamera. If not - we save some perf, but we don't see what is rendered.
-	private bool ShouldScale;				// 
+
 	public static string[] UpsamplingConstants = {
 		"CatmullRom",
 		"CAS",
@@ -48,14 +48,13 @@ public class BlittingScript : MonoBehaviour
 	void Start()
 	{
 		bool ShouldApplySettings = false;
-		ShouldScale = false;
 		string[] Args = System.Environment.GetCommandLineArgs();
 		for (int i = 0; i < Args.Length; i++)
 		{
 			string LowerArgs = Args[i].ToLower();
 			switch (LowerArgs)
 			{
-				case "--benchmark":
+				case "-benchmark":
 				{
 					QualitySettings.vSyncCount = 0;
 					break;
@@ -66,7 +65,6 @@ public class BlittingScript : MonoBehaviour
 					if (i == Args.Length)
 						break;
 					string NewRes = Args[i];
-					ShouldScale = true;
 
 					switch (NewRes)
 					{
@@ -210,14 +208,7 @@ public class BlittingScript : MonoBehaviour
 
 		Debug.Log(String.Format("Current quality level: {0}", QualitySettings.names[QualitySettings.GetQualityLevel()]));
 
-		if (!ShouldScale)
-		{
-			PresentCamera.enabled = false;
-		}
-		else
-		{
-			PresentCamera.enabled = FinalBlit;
-		}
+		PresentCamera.enabled = FinalBlit;
 	}
 	float SetDynamicResolutionScale()
 	{
@@ -307,6 +298,11 @@ public class BlittingScript : MonoBehaviour
 	void SetupOnRun()
 	{
 		RenderCamera.depth = PresentCamera.depth - 1;
+
+		if (OffscreenWidth == 0)
+			OffscreenWidth = MainBackBuffer != null ? MainBackBuffer.width : RenderCamera.pixelWidth;
+		if (OffscreenHeight == 0)
+			OffscreenHeight = MainBackBuffer != null ? MainBackBuffer.height : RenderCamera.pixelHeight;
 
 		RenderTextureDescriptor Desc = MainBackBuffer != null ? MainBackBuffer.descriptor : new RenderTextureDescriptor(OffscreenWidth, OffscreenHeight, RenderTextureFormat.ARGB32);
 		if (FixedSizeRT != null)

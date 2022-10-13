@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Check Argument Benchmark
-  Option: --benchmark
+  Option: -benchmark
   OnArgumentPresent:
   - {fileID: 2684366612719301504}
   OnArgumentAbsent:

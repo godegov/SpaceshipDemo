@@ -17,6 +17,6 @@ MonoBehaviour:
   BuildPath: Build/Win64/Benchmark/
   ExecutableName: Spaceship.exe
   CleanupBeforeBuild: 1
-  RunWithArguments: --benchmark
+  RunWithArguments: -benchmark
   Profile: {fileID: 11400000, guid: e4477d07ca6209547874cb1be39ae63d, type: 2}
   SceneList: {fileID: 11400000, guid: dd790fd6ec20f15478b7a5c9a4052538, type: 2}
